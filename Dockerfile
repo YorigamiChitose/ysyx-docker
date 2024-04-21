@@ -26,9 +26,11 @@ RUN git config --global user.email "test@test.com" \
 
 RUN git clone https://github.com/OSCPU/ysyx-workbench.git ysyx-workbench-default \
     && cd ${APPDIR}/ysyx-workbench-default \
+    && sed -i 's!git@github.com:!https://github.com/!g' init.sh \
     && bash init.sh nemu \
     && bash init.sh am-kernels \
     && bash init.sh navy-apps \
+    && sed -i 's!git@github.com:!https://github.com/!g' `grep -rl git@github.com: .` \
     && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal \
     && git clone --depth=1 https://github.com/NJU-ProjectN/pal-navy.git repo \
     && mkdir ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal/repo/data \
