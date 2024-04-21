@@ -47,8 +47,10 @@ RUN git clone https://github.com/OSCPU/ysyx-workbench.git ysyx-workbench-default
 
 RUN git clone https://github.com/lefou/millw.git \
     && ln -sf ${APPDIR}/millw/millw /usr/bin/mill \
-    && mill --version
+    && mill --version \
+    && MILL_VERSION=0.10.15 mill --version
 
 RUN git clone https://github.com/OpenXiangShan/chisel-playground.git \
     && cd ${APPDIR}/chisel-playground \
-    && make test
+    && make test \
+    && MILL_VERSION=0.10.15 make test
