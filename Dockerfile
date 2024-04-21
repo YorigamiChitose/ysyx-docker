@@ -16,7 +16,7 @@ RUN git clone https://github.com/verilator/verilator.git \
     && git checkout v5.008 \
     && autoconf \
     && ./configure \
-    && make -j \
+    && make -j4 \
     && make install \
     && cd ${APPDIR} \
     && rm -rf verilator
@@ -25,22 +25,22 @@ RUN git config --global user.email "test@test.com" \
     && git config --global user.name "test"
 
 RUN git clone https://github.com/OSCPU/ysyx-workbench.git ysyx-workbench-default \
-    && cd ${APPDIR}/ysyx-workbench \
+    && cd ${APPDIR}/ysyx-workbench-default \
     && bash init.sh nemu \
     && bash init.sh am-kernels \
     && bash init.sh navy-apps \
-    && cd ${APPDIR}/ysyx-workbench/navy-apps/apps/pal \
+    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal \
     && git clone --depth=1 https://github.com/NJU-ProjectN/pal-navy.git repo \
-    && mkdir ${APPDIR}/ysyx-workbench/navy-apps/apps/pal/repo/data \
-    && cd ${APPDIR}/ysyx-workbench/navy-apps/apps/pal/repo/data \
+    && mkdir ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal/repo/data \
+    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal/repo/data \
     && wget https://box.nju.edu.cn/f/73c08ca0a5164a94aaba/\?dl\=1 -O pal-data-new.tar.bz2 \
     && tar -jxvf pal-data-new.tar.bz2 \
     && rm pal-data-new.tar.bz2 \
-    && cd ${APPDIR}/ysyx-workbench/navy-apps/libs \
+    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/libs \
     && git clone https://github.com/NJU-ProjectN/newlib-navy.git libc \
-    && cd ${APPDIR}/ysyx-workbench/navy-apps/apps/bird \
+    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/bird \
     && git clone --depth=1 https://github.com/NJU-ProjectN/sdlbird.git repo \
-    && cd ${APPDIR}/ysyx-workbench/nemu/tools/spike-diff \
+    && cd ${APPDIR}/ysyx-workbench-default/nemu/tools/spike-diff \
     && git clone --depth=1 https://github.com/NJU-ProjectN/riscv-isa-sim.git repo
 
 RUN git clone https://github.com/lefou/millw.git \
