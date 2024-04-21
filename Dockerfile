@@ -11,12 +11,15 @@ RUN apt update && apt upgrade -y && apt install -y \
     libfl2 zlib1g zlib1g-dev
 
 
+ARG VERILATOR_VERSION=v5.008
+ARG MAKE_J=4
+
 RUN git clone https://github.com/verilator/verilator.git \
     && cd ${APPDIR}/verilator \
-    && git checkout v5.008 \
+    && git checkout ${VERILATOR_VERSION} \
     && autoconf \
     && ./configure \
-    && make -j4 \
+    && make -j${MAKE_J} \
     && make install \
     && cd ${APPDIR} \
     && rm -rf verilator
@@ -24,33 +27,37 @@ RUN git clone https://github.com/verilator/verilator.git \
 RUN git config --global user.email "test@test.com" \
     && git config --global user.name "test"
 
-RUN git clone https://github.com/OSCPU/ysyx-workbench.git ysyx-workbench-default \
-    && cd ${APPDIR}/ysyx-workbench-default \
+ARG YSYX=ysyx-workbench-default
+
+RUN git clone https://github.com/OSCPU/ysyx-workbench.git ${YSYX} \
+    && cd ${APPDIR}/${YSYX} \
     && sed -i 's!git@github.com:!https://github.com/!g' init.sh \
     && bash init.sh nemu \
     && bash init.sh am-kernels \
     && bash init.sh navy-apps \
     && sed -i 's!git@github.com:!https://github.com/!g' `grep -rl git@github.com: .` \
-    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal \
+    && cd ${APPDIR}/${YSYX}/navy-apps/apps/pal \
     && git clone --depth=1 https://github.com/NJU-ProjectN/pal-navy.git repo \
-    && mkdir ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal/repo/data \
-    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/pal/repo/data \
+    && mkdir ${APPDIR}/${YSYX}/navy-apps/apps/pal/repo/data \
+    && cd ${APPDIR}/${YSYX}/navy-apps/apps/pal/repo/data \
     && wget https://box.nju.edu.cn/f/73c08ca0a5164a94aaba/\?dl\=1 -O pal-data-new.tar.bz2 \
     && tar -jxvf pal-data-new.tar.bz2 \
     && rm pal-data-new.tar.bz2 \
-    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/libs \
+    && cd ${APPDIR}/${YSYX}/navy-apps/libs \
     && git clone https://github.com/NJU-ProjectN/newlib-navy.git libc \
-    && cd ${APPDIR}/ysyx-workbench-default/navy-apps/apps/bird \
+    && cd ${APPDIR}/${YSYX}/navy-apps/apps/bird \
     && git clone --depth=1 https://github.com/NJU-ProjectN/sdlbird.git repo \
-    && cd ${APPDIR}/ysyx-workbench-default/nemu/tools/spike-diff \
+    && cd ${APPDIR}/${YSYX}/nemu/tools/spike-diff \
     && git clone --depth=1 https://github.com/NJU-ProjectN/riscv-isa-sim.git repo
+
+ARG OLD_MILL=0.10.15
 
 RUN git clone https://github.com/lefou/millw.git \
     && ln -sf ${APPDIR}/millw/millw /usr/bin/mill \
     && mill --version \
-    && MILL_VERSION=0.10.15 mill --version
+    && MILL_VERSION=${OLD_MILL} mill --version
 
 RUN git clone https://github.com/OpenXiangShan/chisel-playground.git \
     && cd ${APPDIR}/chisel-playground \
     && make test \
-    && MILL_VERSION=0.10.15 make test
+    && MILL_VERSION=${OLD_MILL} make test
