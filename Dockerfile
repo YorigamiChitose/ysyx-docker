@@ -16,7 +16,7 @@ RUN git clone https://github.com/verilator/verilator.git \
     && git checkout v5.008 \
     && autoconf \
     && ./configure \
-    && make -j 8 \
+    && make -j \
     && make install \
     && cd ${APPDIR} \
     && rm -rf verilator
