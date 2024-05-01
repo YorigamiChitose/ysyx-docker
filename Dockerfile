@@ -1,12 +1,18 @@
 FROM ubuntu:22.04
 
-ARG APPDIR=/app
+ARG APPDIR=/root
 WORKDIR ${APPDIR}
+
+RUN echo "# By default, mirror sources are disabled. If needed, please uncomment them manually." >> /etc/apt/sources.list \
+    && echo "# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse" >> /etc/apt/sources.list \
+    && echo "# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list \
+    && echo "# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse" >> /etc/apt/sources.list \
+    && echo "# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt update && apt upgrade -y && apt install -y \
     build-essential git man gcc-doc gdb libreadline-dev libsdl2-dev llvm llvm-dev vim \
     g++-riscv64-linux-gnu binutils-riscv64-linux-gnu device-tree-compiler \
-    openjdk-17-jdk wget curl help2man perl python3 make autoconf \
+    openjdk-17-jdk wget curl help2man perl python3 cmake make autoconf neofetch \
     flex bison ccache libgoogle-perftools-dev numactl perl-doc \
     libfl2 zlib1g zlib1g-dev
 
@@ -20,6 +26,7 @@ RUN git clone https://github.com/verilator/verilator.git \
     && autoconf \
     && ./configure \
     && make -j${MAKE_J} \
+    && make test \
     && make install \
     && cd ${APPDIR} \
     && rm -rf verilator
@@ -34,6 +41,7 @@ RUN git clone https://github.com/OSCPU/ysyx-workbench.git ${YSYX} \
     && sed -i 's!git@github.com:!https://github.com/!g' init.sh \
     && bash init.sh nemu \
     && bash init.sh am-kernels \
+    && bash init.sh abstract-machine \
     && bash init.sh navy-apps \
     && sed -i 's!git@github.com:!https://github.com/!g' `grep -rl git@github.com: .` \
     && cd ${APPDIR}/${YSYX}/navy-apps/apps/pal \
