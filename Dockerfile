@@ -66,13 +66,13 @@ ARG OLD_MILL_10_12=0.10.12 # for old project
 RUN git clone https://github.com/lefou/millw.git \
     && ln -sf ${APPDIR}/millw/millw /usr/bin/mill \
     && mill --version \
-    && MILL_VERSION=${OLD_MILL_11_6} mill --version
-    && MILL_VERSION=${OLD_MILL_10_15} mill --version
+    && MILL_VERSION=${OLD_MILL_11_6} mill --version \
+    && MILL_VERSION=${OLD_MILL_10_15} mill --version \
     && MILL_VERSION=${OLD_MILL_10_12} mill --version
 
 RUN git clone https://github.com/OpenXiangShan/chisel-playground.git \
     && cd ${APPDIR}/chisel-playground \
     && make test \
-    && MILL_VERSION=${OLD_MILL_11_6} make test
-    && MILL_VERSION=${OLD_MILL_10_15} make test
+    && MILL_VERSION=${OLD_MILL_11_6} make test \
+    && MILL_VERSION=${OLD_MILL_10_15} make test \
     && MILL_VERSION=${OLD_MILL_10_12} make test
